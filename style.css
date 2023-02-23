@@ -39,7 +39,7 @@ p{
     padding-inline: 10px;
 }
 
-.side > div{
+.side > div > div{
     display: grid;
     grid-template-columns: repeat(1, 1fr);
     gap: 5px;
@@ -92,7 +92,11 @@ p{
     border-radius: 15px;
 }
 
-.task > p{
+.task > div{
+    display: flex;
+}
+
+.task > p, .task > div > p{
     font-size: 23px;
     font-weight: bold;
 }
