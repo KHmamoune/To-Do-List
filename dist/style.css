@@ -24,8 +24,9 @@ p{
     margin-block: 0;
 }
 
-input{
+input, textarea{
     background-color: rgb(58, 58, 58);
+    border-radius: 20px;
 }
 
 .header{
@@ -85,7 +86,6 @@ input{
 
 .task{
     background-color: rgb(58, 58, 58);
-    border-left: 10px solid green;
     display: flex;
     flex-direction: column;
     padding: 10px 20px;
@@ -102,6 +102,12 @@ input{
 
 .task :first-child :nth-child(2){
     display: flex;
+}
+
+.check{
+    width: 25px;
+    height: 25px;
+    margin-right: 10px;
 }
 
 .task > input{
