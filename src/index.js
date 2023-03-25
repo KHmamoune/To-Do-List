@@ -10,7 +10,7 @@ let tasks = []
 
 
 //this is the construct that we use to create our task object.
-function task(index, task, description, priority, sub_tasks, dead_line){
+function task(index, task, description, priority, dead_line, sub_tasks){
     this.index = index
     this.task = task
     this.description = description
@@ -59,10 +59,9 @@ function createTask(){
 
 
 //these three fuctions are used to add tabs, descriptions and sub-tasks respectively.
-function addTab(){
+function addTab(text){
     let holder = document.createElement("button")
     let tab = document.createElement("div")
-    let text = prompt("tab name:")
 
     holder.classList.add("tab")
     holder.textContent = text
@@ -136,21 +135,21 @@ function finish(tab, holder){
 
     //then we add a 2 length array with a task object with all the info and the dom element.
     //and by adding the index we can remove the array element when we remove the dom element. 
-    let todo = new task(tasks.length, subject.value, description_text, priority.value, dead)
+    let todo = new task(tasks.length, subject.value, description_text, priority.value, dead, subs)
     tasks.push([todo, holder])
 
     holder.innerHTML = `<div class="task">
         <div>
             <div>
-                <input type="checkbox" name="task" class="check">
-                <label for="task"> ${todo.task} </label>
+                <img src="icons/check-circle-outline.svg" class="checkbox">
+                <p> ${todo.task} </p>
             </div>
             <div>
                 <div>
                     <p>${dead}</p>
                 </div>
                 <img src="icons/chevron-down.svg" class="expand">
-                <img src="icons/pencil.svg">
+                <img src="icons/pencil.svg" class="edit">
                 <img src="icons/delete.svg" class="remtask">
             </div>
         </div>
@@ -180,10 +179,13 @@ function finish(tab, holder){
 
         let holder3 = document.createElement("div")
         holder3.innerHTML =`<div>
-        <input type="checkbox" name="sub">
-        <label for="sub"> ${subs[i]} </label>
+        <img src="icons/check-circle-outline.svg" class="minicheckbox">
+        <p> ${subs[i]} </p>
         </div>
-        <img src="icons/delete.svg" class=""remsub>`
+        <img src="icons/delete.svg" class="remsub">`
+
+        const check_box = holder3.querySelector(".minicheckbox")
+        check_box.addEventListener("mousedown", () => submark(check_box))
 
         holder3.classList.add("sub")
         holder2.appendChild(holder3)
@@ -192,9 +194,11 @@ function finish(tab, holder){
     const btns = holder.querySelector(".btns")
     const delete_task = holder.querySelector(".remtask")
     const show_details = holder.querySelector(".expand")
+    const check_box = holder.querySelector(".checkbox")
 
     delete_task.addEventListener("mousedown", () => removeTask(todo))
     show_details.addEventListener("mousedown", () => show(show_details, holder))
+    check_box.addEventListener("mousedown", () => mark(holder, todo))
     btns.style.display = "none"
 
     btns.appendChild(holder2)
@@ -209,7 +213,6 @@ function removeTask(current_task){
     
     tasks[current_task.index][1].remove()
     tasks.splice(current_task.index,1)
-    console.log(tasks)
 }
 
 
@@ -217,6 +220,7 @@ function removeTask(current_task){
 function display(button, tab){ 
     const buttons = document.querySelectorAll(".tab")
     const tabs = document.querySelectorAll(".holder")
+    const complete = document.querySelector(".complete")
 
     buttons.forEach(element =>{
         element.classList.remove("selected")
@@ -229,6 +233,7 @@ function display(button, tab){
 
         button.classList.add("selected")
         selected = button.textContent
+        complete.style.display = "none"
     }else{
         tabs.forEach(element =>{
             element.style.display = "none"
@@ -255,6 +260,34 @@ function show(btn, holder){
 }
 
 
+function submark(check_box){
+    check_box.src = "icons/check-circle.svg"
+}
+
+function mark(holder){
+    const check_box = holder.querySelector(".checkbox")
+    const edit = holder.querySelector(".edit")
+    check_box.src = "icons/check-circle.svg"
+
+    holder.remove()
+    const complete = document.querySelector(".complete")
+    edit.remove()
+
+    if(complete == null){
+        addTab("complete")
+        const complete = document.querySelector(".complete")
+        complete.appendChild(holder)
+        complete.style.display = "none"
+    }else{
+        complete.appendChild(holder)
+    }
+}
+
+
+add_tab.addEventListener("click", () => {
+    let text = prompt("tab name:")
+    addTab(text)
+})
+
 inbox.addEventListener("click", () => display(inbox, inbox_tab))
-add_tab.addEventListener("click", () => addTab())
 add_task.addEventListener("click", () => createTask())
